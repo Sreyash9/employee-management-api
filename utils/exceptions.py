@@ -1,0 +1,2 @@
+class EmployeeAlreadyExistsError(Exception): 
+    pass
