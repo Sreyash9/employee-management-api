@@ -34,3 +34,10 @@ class EmployeeResponse(BaseModel):
     model_config = {
         "from_attributes": True
     }
+
+class EmployeeListResponse(BaseModel):
+    items: list[EmployeeResponse]
+    total: int
+    page: int
+    page_size: int
+    total_pages: int

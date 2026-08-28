@@ -21,8 +21,60 @@ def create_employee(db: Session, employee: EmployeeCreate):
     return db_employee
 
 
-def get_employees(db: Session):
-    return db.query(Employee).all()
+def get_employees(
+    db: Session,
+    department: str | None = None,
+    name: str | None = None,
+    sort_by: str = "id",
+    order: str = "asc",
+    page: int = 1,
+    page_size: int = 10
+):
+    query = db.query(Employee)
+
+    if department:
+        query = query.filter(
+            Employee.department == department
+        )
+
+    if name:
+        query = query.filter(
+            Employee.name.ilike(f"%{name}%")
+        )
+
+    total = query.count()
+
+    sort_columns = {
+        "id": Employee.id,
+        "name": Employee.name,
+        "salary": Employee.salary,
+        "joining_date": Employee.joining_date,
+        "created_at": Employee.created_at
+    }
+
+    if sort_by not in sort_columns:
+        sort_by = "id"
+
+    sort_column = sort_columns[sort_by]
+
+    if order.lower() == "desc":
+        query = query.order_by(
+            sort_column.desc()
+        )
+    else:
+        query = query.order_by(
+            sort_column.asc()
+        )
+
+    offset = (page - 1) * page_size
+
+    employees = query.offset(
+        offset
+    ).limit(
+        page_size
+    ).all()
+
+    return employees, total
 
 
 def get_employee(db: Session, employee_id: int):

@@ -24,8 +24,24 @@ def create_employee(
     )
 
 
-def get_employees(db: Session):
-    return employee_repository.get_employees(db)
+def get_employees(
+    db: Session,
+    department: str | None = None,
+    name: str | None = None,
+    sort_by: str = "id",
+    order: str = "asc",
+    page: int = 1,
+    page_size: int = 10
+):
+    return employee_repository.get_employees(
+        db,
+        department,
+        name,
+        sort_by,
+        order,
+        page,
+        page_size
+    )
 
 
 def get_employee(
